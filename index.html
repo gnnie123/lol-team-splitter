@@ -13,6 +13,9 @@
     .team {
       margin-top: 20px;
     }
+    #players {
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -27,6 +30,7 @@
 
   <script>
     const players = [];
+    let showPlayers = true;
 
     function addPlayer() {
       const input = document.getElementById('playerInput');
@@ -39,7 +43,12 @@
 
     function displayPlayers() {
       const playersDiv = document.getElementById('players');
-      playersDiv.innerHTML = '<h2>플레이어 리스트</h2>' + players.map(p => `<p>${p}</p>`).join('');
+      if (showPlayers) {
+        playersDiv.style.display = 'block';
+        playersDiv.innerHTML = '<h2>플레이어 리스트</h2>' + players.map(p => `<p>${p}</p>`).join('');
+      } else {
+        playersDiv.style.display = 'none';
+      }
     }
 
     function splitTeams() {
@@ -51,17 +60,22 @@
       const half = Math.ceil(shuffled.length / 2);
       const teamA = shuffled.slice(0, half);
       const teamB = shuffled.slice(half);
+      document.getElementById('players').style.display = 'none'; // 리스트 숨기기
+      showPlayers = false;
       document.getElementById('teamA').innerHTML = `<h2>팀 A</h2>${teamA.map(p => `<p>${p}</p>`).join('')}`;
       document.getElementById('teamB').innerHTML = `<h2>팀 B</h2>${teamB.map(p => `<p>${p}</p>`).join('')}`;
     }
 
     function reset() {
       players.length = 0;
+      showPlayers = true;
       document.getElementById('players').innerHTML = '';
+      document.getElementById('players').style.display = 'block';
       document.getElementById('teamA').innerHTML = '';
       document.getElementById('teamB').innerHTML = '';
     }
   </script>
 </body>
 </html>
+
 
