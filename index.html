@@ -1,65 +1,68 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LOL 팀 나누기</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      margin: 20px;
-    }
-    .team {
-      margin-top: 20px;
-    }
-  </style>
-</head>
-<body>
-  <h1>LOL 팀 나누기</h1>
-  <input type="text" id="playerInput" placeholder="플레이어 이름 입력" />
-  <button onclick="addPlayer()">추가</button>
-  <button onclick="splitTeams()">팀 나누기</button>
-  <button onclick="reset()">리셋</button>
-  <div id="players"></div>
-  <div class="team" id="teamA"></div>
-  <div class="team" id="teamB"></div>
+import { useState } from "react";
 
-  <script>
-    const players = [];
+function App() {
+  const [players, setPlayers] = useState([]);
+  const [teams, setTeams] = useState(null);
+  const [showPlayers, setShowPlayers] = useState(true);
 
-    function addPlayer() {
-      const input = document.getElementById('playerInput');
-      if (input.value.trim()) {
-        players.push(input.value.trim());
-        input.value = '';
-        displayPlayers();
-      }
+  const addPlayer = (name) => {
+    if (name.trim() !== "") {
+      setPlayers([...players, name.trim()]);
     }
+  };
 
-    function displayPlayers() {
-      const playersDiv = document.getElementById('players');
-      playersDiv.innerHTML = '<h2>플레이어 리스트</h2>' + players.map(p => `<p>${p}</p>`).join('');
+  const shuffleTeams = () => {
+    if (players.length < 2) {
+      alert("플레이어가 최소 2명 필요합니다.");
+      return;
     }
+    const shuffled = [...players].sort(() => Math.random() - 0.5);
+    const half = Math.ceil(shuffled.length / 2);
+    setTeams({ teamA: shuffled.slice(0, half), teamB: shuffled.slice(half) });
+    setShowPlayers(false);
+  };
 
-    function splitTeams() {
-      if (players.length !== 10) {
-        alert('10명의 플레이어를 추가해주세요!');
-        return;
-      }
-      const shuffled = [...players].sort(() => Math.random() - 0.5);
-      const teamA = shuffled.slice(0, 5);
-      const teamB = shuffled.slice(5);
-      document.getElementById('teamA').innerHTML = `<h2>팀 A</h2>${teamA.map(p => `<p>${p}</p>`).join('')}`;
-      document.getElementById('teamB').innerHTML = `<h2>팀 B</h2>${teamB.map(p => `<p>${p}</p>`).join('')}`;
-    }
+  const resetPlayers = () => {
+    setPlayers([]);
+    setTeams(null);
+    setShowPlayers(true);
+  };
 
-    function reset() {
-      players.length = 0;
-      document.getElementById('players').innerHTML = '';
-      document.getElementById('teamA').innerHTML = '';
-      document.getElementById('teamB').innerHTML = '';
-    }
-  </script>
-</body>
-</html>
+  return (
+    <div style={{ maxWidth: "400px", margin: "auto", textAlign: "center", padding: "20px" }}>
+      <h1>리그오브레전드 팀 나누기</h1>
+      <input
+        type="text"
+        placeholder="플레이어 이름 입력"
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            addPlayer(e.target.value);
+            e.target.value = "";
+          }
+        }}
+        style={{ width: "100%", padding: "8px", marginBottom: "10px" }}
+      />
+      <button onClick={shuffleTeams} style={{ marginRight: "10px" }}>팀 나누기</button>
+      <button onClick={resetPlayers}>리셋</button>
+      {showPlayers && (
+        <div style={{ marginTop: "20px" }}>
+          <h2>플레이어 리스트</h2>
+          {players.map((player, index) => (
+            <p key={index}>{player}</p>
+          ))}
+        </div>
+      )}
+      {teams && (
+        <div style={{ marginTop: "20px" }}>
+          <h2>팀 A</h2>
+          <ul>{teams.teamA.map((player, index) => <li key={index}>{player}</li>)}</ul>
+          <h2>팀 B</h2>
+          <ul>{teams.teamB.map((player, index) => <li key={index}>{player}</li>)}</ul>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default App;
+
