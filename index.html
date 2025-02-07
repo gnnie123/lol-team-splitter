@@ -55,9 +55,17 @@ function App() {
       {teams && (
         <div style={{ marginTop: "20px" }}>
           <h2>팀 A</h2>
-          <ul>{teams.teamA.map((player, index) => <li key={index}>{player}</li>)}</ul>
+          <ul>
+            {teams.teamA.map((player, index) => (
+              <li key={index}>{player}</li>
+            ))}
+          </ul>
           <h2>팀 B</h2>
-          <ul>{teams.teamB.map((player, index) => <li key={index}>{player}</li>)}</ul>
+          <ul>
+            {teams.teamB.map((player, index) => (
+              <li key={index}>{player}</li>
+            ))}
+          </ul>
         </div>
       )}
     </div>
